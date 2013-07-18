@@ -16,6 +16,13 @@
     </head>
 
     <body>
+        
+        <?php
+            //require_once('dbconnection.php');
+            //connectToDB();
+            //phpinfo();
+        ?>
+        
         <ul id="org" style="display:none">
             <li><a href="#" target="_blank">Chapter 1</a><br /><font size="1px"><i>Author: Ray</i></font>     
                 <ul> 
