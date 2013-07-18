@@ -5,6 +5,7 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     </head>
     <body>
+        <a href="index.php">Home</a>
         <form method="post" id="createaccount" name="createaccount" action="" >
             <table>
                 <tr>

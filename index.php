@@ -21,6 +21,7 @@
             //require_once('dbconnection.php');
             //connectToDB();
             //phpinfo();
+            echo '<a href="registration.php">Register</a>';
         ?>
         
         <ul id="org" style="display:none">
