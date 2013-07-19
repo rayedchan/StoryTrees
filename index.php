@@ -9,6 +9,7 @@
         <link rel="stylesheet" href="css/custom.css"/>
         <title>Story Tree</title>
         <script type="text/javascript">
+            /*Call method to built the story tree diagram*/
             jQuery(document).ready(function() {
                  $("#org").jOrgChart();
             });
@@ -21,9 +22,11 @@
             //require_once('dbconnection.php');
             //connectToDB();
             //phpinfo();
-            echo '<a href="registration.php">Register</a>';
+            //echo '<a href="registration.php">Register</a>';
         ?>
         
+        <a href="registration.php">Sign up</a> | <a href="login.php">Login</a>
+        <!--Story Tree diagram -->
         <ul id="org" style="display:none">
             <li><a href="#" target="_blank">Chapter 1</a><br /><font size="1px"><i>Author: Ray</i></font>     
                 <ul> 
