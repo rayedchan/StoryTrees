@@ -14,7 +14,7 @@
                 <input type="text" class="text-field" id="username" name="username" maxlength="30" value="" placeholder="Username" /><br />
                 <input type="password" class="text-field" placeholder="Password"  maxlength="128" value="" /><br />
                 <span><a href="">Reset Password</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-                <input type="button" value="Log In" class="button" /><br />
+                <input type="submit" value="Log In" class="button" /><br />
             </div>
         </form>
     </body>
