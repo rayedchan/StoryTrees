@@ -8,7 +8,7 @@
 
     <body>
         <a href="index.php">Home</a> | <a href="registration.php">Sign up</a>
-        <form method="post" id="login" name="login" action="">
+        <form method="post" id="login" class="login" name="login" action="">
             <div align="center">
                 <h2>Log In</h2>
                 <input type="text" class="text-field" id="username" name="username" maxlength="30" value="" placeholder="Username" /><br />

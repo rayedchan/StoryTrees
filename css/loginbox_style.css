@@ -36,7 +36,7 @@ nav a.focus {
 
 /* LOGIN & REGISTER FORM */
 
-form {
+.login{
 	width: 350px;
 	height: 250px;
 	margin: 150px auto;
@@ -48,7 +48,14 @@ form {
 }
 
 .register{																				/* Register form height */
+	width: 350px;
 	height: 300px;
+	margin: 150px auto;
+	background: white;
+	border-radius: 3px;
+	box-shadow: 0 0 10px rgba(0,0,0, .4); 
+	/*text-align: center;*/
+	padding-top: 1px;
 }
 
 form .text-field {																			/* Input fields; Username, Password etc. */
