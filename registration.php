@@ -7,7 +7,7 @@
         <link rel="stylesheet" href="css/loginbox_style.css" />
     </head>
     <body>
-        <a href="index.php">Home</a> | <a href="login.php">Login</a>
+        <?php require('navigation.html'); ?>
         <form method="post" id="createaccount" class="register" name="createaccount" action="" >
             <div align="center">
                 <h2>Registration Form</h2>

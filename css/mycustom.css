@@ -1,0 +1,31 @@
+/* 
+    Document   : mycustom
+    Created on : Jul 23, 2013, 8:16:16 PM
+    Author     : rchan
+    Description:
+        Purpose of the stylesheet follows.
+*/
+
+root { 
+    display: block;
+}
+
+.box
+{
+    border-radius: 5px;
+    background: white;
+    width: 350px;
+    height: auto;
+    color: black;
+    /*left: 160px;
+    top: 225px;
+    margin: 0px;
+    margin-left:auto;
+    margin-right: auto;*/
+    padding: 20px;
+    opacity:0.75;
+    float: left;
+    /*margin-top: 50px;*/
+    box-shadow: 0 0 10px rgba(0,0,0, .4); 
+}
+

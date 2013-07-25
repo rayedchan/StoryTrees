@@ -7,7 +7,7 @@
     </head>
 
     <body>
-        <a href="index.php">Home</a> | <a href="registration.php">Sign up</a>
+        <?php require('navigation.html'); ?>
         <form method="post" id="login" class="login" name="login" action="">
             <div align="center">
                 <h2>Log In</h2>

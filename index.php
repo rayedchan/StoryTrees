@@ -23,9 +23,9 @@
             //connectToDB();
             //phpinfo();
             //echo '<a href="registration.php">Register</a>';
+            require('navigation.html');
         ?>
         
-        <a href="registration.php">Sign up</a> | <a href="login.php">Login</a>
         <!--Story Tree diagram -->
         <ul id="org" style="display:none">
             <li><a href="#" target="_blank">Chapter 1</a><br /><font size="1px"><i>Author: Ray</i></font>     
@@ -47,5 +47,6 @@
                 </ul>
             </li>
         </ul>
+        
     </body>
 </html>
