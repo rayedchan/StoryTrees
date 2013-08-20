@@ -19,10 +19,14 @@
     <body>
         
         <?php
-            //require_once('dbconnection.php');
-            //connectToDB();
-            //phpinfo();
-            //echo '<a href="registration.php">Register</a>';
+            require_once('dbconnection.php');
+            $hostname = 'us-cdbr-east-04.cleardb.com';
+            $username = 'b65aaecc03af97';
+            $password = 'c79a70b5';
+            $dbname = 'heroku_1b0f41c846188ed';
+            $port = '3306';
+            $dbconnection = new DbConnection($hostname, $username, $password, $dbname, $port);
+            $dbconnection ->closeMySQLConnction($dbconnection->getMySQLConnectionResource());
             require('navigation.html');
         ?>
         
