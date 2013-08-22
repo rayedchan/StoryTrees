@@ -36,7 +36,7 @@
             $socket = null;
             $dbconnection = new DbConnection($hostname, $username, $password, $dbname, $port, $socket, MYSQLI_CLIENT_SSL);
             $link = $dbconnection->getMySQLConnectionResource();
-            $dbconnection ->testQuery($link);
+            //$dbconnection ->testQuery($link);
             $dbconnection ->closeMySQLConnection($link);
             require('navigation.html');
         ?>
