@@ -19,14 +19,25 @@
     <body>
         
         <?php
+            //Use on Heroku Server to eliminate hard-coded values
+            /*$url=parse_url(getenv("CLEARDB_DATABASE_URL"));
+            $server = $url["host"];
+            $username = $url["user"];
+            $password = $url["pass"];
+            $db = substr($url["path"],1);
+            echo "$server " . "$username " . "$db ";*/
+        
             require_once('dbconnection.php');
             $hostname = 'us-cdbr-east-04.cleardb.com';
             $username = 'b65aaecc03af97';
             $password = 'c79a70b5';
             $dbname = 'heroku_1b0f41c846188ed';
             $port = '3306';
-            $dbconnection = new DbConnection($hostname, $username, $password, $dbname, $port);
-            $dbconnection ->closeMySQLConnction($dbconnection->getMySQLConnectionResource());
+            $socket = null;
+            $dbconnection = new DbConnection($hostname, $username, $password, $dbname, $port, $socket, MYSQLI_CLIENT_SSL);
+            $link = $dbconnection->getMySQLConnectionResource();
+            $dbconnection ->testQuery($link);
+            $dbconnection ->closeMySQLConnection($link);
             require('navigation.html');
         ?>
         
