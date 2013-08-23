@@ -1,11 +1,12 @@
 <?php
+
 class DbConnection
 {
     const PATH_TO_SSL_CLIENT_KEY_FILE = 'certs/b65aaecc03af97-key.pem';
     const PATH_TO_SSL_CLIENT_CERT_FILE = 'certs/b65aaecc03af97-cert.pem';
     const PATH_TO_CA_CERT_FILE = 'certs/cleardb-ca.pem';
     private $connection_resource;
-    
+        
     /*
      * Constructor
      */
@@ -120,4 +121,26 @@ class DbConnection
         pg_close($dbconnection_resource);//Close database connection
     }
 }
+
+function quickMySQLConnect()
+{
+    //Use on Heroku Server to eliminate hard-coded values
+    /*$url=parse_url(getenv("CLEARDB_DATABASE_URL"));
+    $server = $url["host"];
+    $username = $url["user"];
+    $password = $url["pass"];
+    $db = substr($url["path"],1);
+    echo "$server " . "$username " . "$db ";*/
+
+    $hostname = 'us-cdbr-east-04.cleardb.com';
+    $username = 'b65aaecc03af97';
+    $password = 'c79a70b5';
+    $dbname = 'heroku_1b0f41c846188ed';
+    $port = '3306';
+    $socket = null;
+    $dbconnection = new DbConnection($hostname, $username, $password, $dbname, $port, $socket, MYSQLI_CLIENT_SSL);
+    $link = $dbconnection->getMySQLConnectionResource();
+    return $link;
+}
+
 ?>
