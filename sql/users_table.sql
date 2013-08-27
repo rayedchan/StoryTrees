@@ -13,5 +13,11 @@ CREATE TABLE users
     create_date timestamp,
     last_modified timestamp,
 
-    primary key(usr_key, username, email)
+    primary key(usr_key),
+    unique(username, email)
 );
+
+/*Password column needs to increase in length in order to
+store hashed password. Password Encryption - Hashing alogorithm
+may change*/
+ALTER TABLE users MODIFY password varchar(255);
