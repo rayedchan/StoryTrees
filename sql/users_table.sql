@@ -14,7 +14,8 @@ CREATE TABLE users
     last_modified timestamp,
 
     primary key(usr_key),
-    unique(username, email)
+    unique(username),
+    unique(email)
 );
 
 /*Password column needs to increase in length in order to

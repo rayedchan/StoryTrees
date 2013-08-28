@@ -1,5 +1,4 @@
 <?php
-    require('../navigation.html');
     require('../classes/dbconnection.php');
     require('../lib/BCrypt/password.php');
  
@@ -35,12 +34,16 @@
         mysql_query($query, $dblink) or die('Invalid query: ' . mysql_error());
         mysql_close($dblink);
         
+        //Redirect 
+        header('Location:../index.php');
+        exit();
+        
         //Dialog box 
         /*echo "
             <script type=\"text/javascript\">
             alert(\"User $username has been created.\");
             </script>
         ";*/
-        echo "<br /> User $username has been created.";
+        //echo "<br /> User $username has been created.";
     }
 ?>

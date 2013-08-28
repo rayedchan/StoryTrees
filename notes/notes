@@ -1,0 +1,6 @@
+To do list:
+-email validation using regular expression
+-JavaScript form validation
+-database user with bare minimum privileges
+-Keep track of login attempts
+-Update code to use mysqli and prepare statements whenever heroku upgrades php version
