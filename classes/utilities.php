@@ -17,4 +17,36 @@ function sec_session_start()
     session_regenerate_id(); // regenerated the session, delete the old one.  
 }
 
+
+/*
+ * Checks if the user session is valid. This is to prevent session hijacking.
+ * It is unlikely a user to change their browser mid-session.
+ */
+function login_check($mysql_dblink) 
+{
+    // Check if all session variables are set
+    if(isset($_SESSION['userkey'], $_SESSION['username'], $_SESSION['hashed_password'])) 
+    {
+        $userkey = $_SESSION['userkey'];
+        $hashed_password = $_SESSION['hashed_password'];
+        $username = $_SESSION['username'];
+        $original_browser = $_SESSION['browser'];
+        $user_browser = $_SERVER['HTTP_USER_AGENT']; // Get the user-agent string of the user.
+
+        $validate_user_query = "SELECT 1 FROM users WHERE 
+            usr_key = '$userkey' AND password = '$hashed_password'
+            AND username = '$username'";
+        
+        $result = mysql_query($validate_user_query, $mysql_dblink);
+        $numrows = mysql_num_rows($result);
+        
+        //Validate user session
+        if($numrows == 1 && $original_browser == $user_browser) 
+        {
+            return true;
+        }
+    }
+     
+    return false; 
+}
 ?>

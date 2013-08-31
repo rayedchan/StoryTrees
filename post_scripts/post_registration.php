@@ -1,22 +1,17 @@
 <?php
     require('../classes/dbconnection.php');
     require('../lib/BCrypt/password.php');
- 
+
     //Process Registration Form
-    $username = $_POST['username'];
-    $email = $_POST['email'];
-    $password = $_POST['password'];
-    
-    //Checks if form fields exist and are not null
-    if(!empty($username) && !empty($email) && !empty($password))
+    if(isset( $_POST['username'],$_POST['email']))
     {
         //Database connection
         $dblink = quickMySQLConnect();
                 
         //Cleanup form data
-        $username = mysql_real_escape_string(trim($username),$dblink);
-        $email = mysql_real_escape_string(trim($email),$dblink);
-        $password = mysql_real_escape_string(trim($password),$dblink);
+        $username = mysql_real_escape_string(trim( $_POST['username']),$dblink);
+        $email = mysql_real_escape_string(trim($_POST['email']),$dblink);
+        $password = mysql_real_escape_string(trim($_POST['password']),$dblink);
         
         //Validation after trimming 
         if(empty($username) || empty($email) || empty($password))
@@ -46,4 +41,5 @@
         ";*/
         //echo "<br /> User $username has been created.";
     }
+    
 ?>

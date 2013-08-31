@@ -1,5 +1,5 @@
 <?php
-phpinfo();
+//phpinfo();
 
 /*require('lib/BCrypt/password.php');
 $password = 'Password1';
@@ -20,5 +20,7 @@ else
 {
     echo "Failed to authenticate.";
 }*/
-
+$userkey = '2dsuhjk1sdhskdjds';
+$user_id = preg_replace("/[^0-9]+/", "", $userkey);
+echo $user_id;
 ?>

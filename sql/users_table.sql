@@ -22,3 +22,9 @@ CREATE TABLE users
 store hashed password. Password Encryption - Hashing alogorithm
 may change*/
 ALTER TABLE users MODIFY password varchar(255);
+
+/*
+* Keep track of login attempts. This is needed to prevent brute force
+* password guessing. 
+*/
+ALTER TABLE users ADD COLUMN login_attempts int DEFAULT 0;

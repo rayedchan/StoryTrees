@@ -1,6 +1,11 @@
 To do list:
 -email validation using regular expression
 -JavaScript form validation
--database user with bare minimum privileges
+-create database user with bare minimum privileges
 -Keep track of login attempts
 -Update code to use mysqli and prepare statements whenever heroku upgrades php version
+-Place sql files and certs out of the web root directory
+-Determine which database engine used for table
+-Always use Https on heroku
+-CAPTCHA
+-Handle else statement in post scripts
