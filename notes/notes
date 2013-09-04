@@ -10,3 +10,4 @@ To do list:
 -CAPTCHA
 -Handle else statement in post scripts
 -Free result sets
+-Use MySQLi to handle multi-query for multiple result sets

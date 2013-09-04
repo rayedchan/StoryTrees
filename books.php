@@ -33,6 +33,7 @@
                 
                 //Place book_id in the URL
                 echo "<a href=\"chapters.php?bid=$book_id\">Chapters</a>";
+                echo "<br /> <br />";
             }
             
             //Close database connection

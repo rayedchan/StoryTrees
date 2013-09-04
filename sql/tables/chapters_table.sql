@@ -10,6 +10,8 @@ CREATE TABLE chapters
     book_id int unsigned not null,
     chapter_id int unsigned auto_increment primary key not null,
     parent_id int unsigned, -- null means root node
+    height int,
+    content blob,
     title varchar(100),
     author varchar(30),
     description varchar(100),
