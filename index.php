@@ -9,12 +9,12 @@
         <link rel="stylesheet" href="css/custom.css"/>
         <link rel="stylesheet" href="css/mycustom.css"/>
         <title>Story Tree</title>
-        <script type="text/javascript">
+        <!--<script type="text/javascript">
             /*Call method to built the story tree diagram*/
             jQuery(document).ready(function() {
                  $("#org").jOrgChart();
             });
-        </script>
+        </script>-->
     </head>
 
     <body>
@@ -25,7 +25,7 @@
         </div>
         
         <!--Story Tree diagram -->
-        <ul id="org" style="display:none">
+        <!--<ul id="org" style="display:none;">
             <li><a href="#" target="_blank">Chapter 1</a><br /><font size="1px"><i>Author: Ray</i></font>     
                 <ul> 
                     <li><a href="#" target="_blank">Chapter 2a</a></li>
@@ -44,7 +44,6 @@
                     </li>
                 </ul>
             </li>
-        </ul>
-        
+        </ul>-->
     </body>
 </html>

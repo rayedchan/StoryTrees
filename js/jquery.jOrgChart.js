@@ -19,7 +19,7 @@
 
     // build the tree
     $this = $(this);
-    var $container = $("<div class='" + opts.chartClass + "'/>");
+    var $container = $("<div align='center' class='" + opts.chartClass + "'/>");
     if($this.is("ul")) {
       buildNode($this.find("li:first"), $container, 0, opts);
     }

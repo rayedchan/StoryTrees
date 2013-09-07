@@ -13,3 +13,4 @@ To do list:
 -Use MySQLi to handle multi-query for multiple result sets
 -suppress error to prevent valuable info leak to users
 -SQL Date Triggers on Transaction 
+-Deprecate parallel adds (Equivalent to extending the selected node's parent)
