@@ -4,10 +4,14 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>Log In</title>
         <link rel="stylesheet" href="css/loginbox_style.css" />
+        <link rel="stylesheet" href="css/mycustom.css"/>
     </head>
 
     <body>
         <?php require('navigation.html'); ?>
+        <div>
+            <img class="background" src="images/aesir_burough_by_ungdi_sea-d6l4g35.jpg">
+        </div>
         <form method="post" id="login" class="login" name="login" action="post_scripts/post_login.php">
             <div align="center">
                 <h2>Log In</h2>

@@ -8,3 +8,6 @@ CREATE TABLE books
     create_date timestamp,
     last_modified timestamp
 );
+
+/*Book Genre*/
+ALTER TABLE books ADD COLUMN genre varchar(100);

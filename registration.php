@@ -5,9 +5,13 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>Log In</title>
         <link rel="stylesheet" href="css/loginbox_style.css" />
+        <link rel="stylesheet" href="css/mycustom.css"/>
     </head>
     <body>
         <?php require('navigation.html'); ?>
+        <div>
+            <img class="background" src="images/whale_hellooow__by_roiuky-d6l54v3.png">
+        </div>
         <form method="post" id="createaccount" class="register" name="createaccount" action="post_scripts/post_registration.php" >
             <div align="center">
                 <h2>Registration Form</h2>

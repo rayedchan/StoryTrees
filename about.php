@@ -11,6 +11,10 @@
     <body>
         <?php require('navigation.html'); ?>
 
+        <div>
+            <img class="background" src="images/Facebook_in_the_dark_widewall_by_will_yen.jpg">
+        </div>
+        
         <div align="center" style="margin-top: 50px;">
             <!--About description box -->
             <div style="margin-left: 50px; text-align:left;"class="box">
@@ -26,7 +30,7 @@
                     A Story Tree can be represented as a book.
                     Each node (rectangular box) represents a chapter. 
                     There can only be one beginning chapter in a Story Tree.
-                    In this example, there are five story lines.
+                    In this example, there are six story lines.
                     <ol>
                         <li>Chapter 1 -> Chapter2a</li>
                         <li>Chapter 1 -> Chapter2b -> Chapter3a</li>

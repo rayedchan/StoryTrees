@@ -8,6 +8,8 @@ To do list:
 -Determine which database engine used for table
 -Always use Https on heroku
 -CAPTCHA
--Handle else statement in post scripts
+-Handle else statement in post scripts and redirection and error handling
 -Free result sets
 -Use MySQLi to handle multi-query for multiple result sets
+-suppress error to prevent valuable info leak to users
+-SQL Date Triggers on Transaction 

@@ -45,6 +45,7 @@ nav a.focus {
 	box-shadow: 0 0 10px rgba(0,0,0, .4); 
 	/*text-align: center;*/
 	padding-top: 1px;
+        opacity: .90;
 }
 
 .register{																				/* Register form height */
@@ -56,6 +57,7 @@ nav a.focus {
 	box-shadow: 0 0 10px rgba(0,0,0, .4); 
 	/*text-align: center;*/
 	padding-top: 1px;
+        opacity: .90;
 }
 
 form .text-field {																			/* Input fields; Username, Password etc. */

@@ -7,6 +7,7 @@
         <script type="text/javascript" src="js/jquery.jOrgChart.js"></script>
         <link rel="stylesheet" href="css/jquery.jOrgChart.css"/>
         <link rel="stylesheet" href="css/custom.css"/>
+        <link rel="stylesheet" href="css/mycustom.css"/>
         <title>Story Tree</title>
         <script type="text/javascript">
             /*Call method to built the story tree diagram*/
@@ -18,6 +19,10 @@
 
     <body>
         <?php  require('navigation.html'); ?>
+        
+        <div>
+            <img class="background" src="images/Facebook_in_the_dark_widewall_by_will_yen.jpg">
+        </div>
         
         <!--Story Tree diagram -->
         <ul id="org" style="display:none">

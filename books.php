@@ -15,7 +15,7 @@
             
             //Query books 
             $book_query = "SELECT book_id, title, description,
-                create_date, last_modified FROM books";
+                create_date, last_modified, genre FROM books";
             $books_result_set = mysql_query($book_query, $dblink);
             
             //Display books
@@ -26,8 +26,9 @@
                 $description = $row['description'];
                 $create_date = $row['create_date'];
                 $last_modified = $row['last_modified'];
+                $genre = $row['genre'];
                
-                echo "Book Id: $book_id <br />Title: $title <br />Description: 
+                echo "Book Id: $book_id <br />Title: $title <br />Genre: $genre <br />Description: 
                     $description <br />Date Created: $create_date 
                     <br />Date Modified: $last_modified <br />";
                 

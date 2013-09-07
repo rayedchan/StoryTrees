@@ -7,6 +7,7 @@
         <script type="text/javascript" src="js/jquery.jOrgChart.js"></script>
         <link rel="stylesheet" href="css/jquery.jOrgChart.css"/>
         <link rel="stylesheet" href="css/custom.css"/>
+        <link rel="stylesheet" href="css/mycustom.css"/>
         <title>Chapters</title>
         <script type="text/javascript">
             /*Call method to built the story tree diagram*/
@@ -17,6 +18,10 @@
     </head>
     
     <body>
+        <div>
+            <img class="background" src="images/Facebook_in_the_dark_widewall_by_will_yen.jpg">
+        </div>
+        
         <?php
             require('navigation.html');
             require('classes/dbconnection.php');
@@ -25,12 +30,23 @@
             //Check if the book id exist and is an numerical
             if(isset($_GET['bid']) && is_numeric($_GET['bid']))
             {
-                $book_id = $_GET['bid'];
+                $book_id = intval($_GET['bid']); //force integer conversion
                 echo "Book Id: " . $book_id;
                 echo "<br />";
                 
                 //Database connection
                 $dblink = quickMySQLConnect();
+                
+                //Determine if any chapters exits for book
+                $chapters_query = "SELECT 1 FROM chapters WHERE book_id = $book_id";
+                $chapters_result = mysql_query($chapters_query, $dblink);
+                $chapters_num_rows = mysql_num_rows($chapters_result);
+                
+                //No chapter exist 
+                if($chapters_num_rows == 0)
+                {
+                   return; 
+                }
                 
                 //Retrieve the max height of the tree
                 $tree_height_query = "SELECT MAX(height) as max_height
