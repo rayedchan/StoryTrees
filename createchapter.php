@@ -16,10 +16,6 @@
                 <td>Selected Chapter Id:</td> 
                 <td><input type="text" name="chapterid" id="chapterid" /></td>
             </tr>
-            <tr>
-                <td><input type="radio" name="createtype" id="createtype" value="1" />Extend</td>
-                <td><input type="radio" name="createtype" id="createtype" value="2" />Parallel</td>
-            </tr>
         <?php } ?>
         
         <tr>

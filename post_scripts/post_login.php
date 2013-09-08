@@ -45,14 +45,7 @@ if(isset($_POST['username'],$_POST['password']))
         
         //Validate Password 
         if(password_verify($password, $hashed_password))
-        {
-            /*echo "Login successfully. <br />";
-            echo "User Key: $userkey <br />";
-            echo "Username: $username <br />";
-            echo "Password: $password <br />";
-            echo "Hash: $hashed_password <br />";
-            echo "Email: $email <br />";*/
-            
+        {            
             $user_browser = $_SERVER['HTTP_USER_AGENT']; // Get the user-agent string of the user.
             $userkey = preg_replace("/[^0-9]+/", "", $userkey); // XSS protection as we might print this value
             $username = preg_replace("/[^a-zA-Z0-9_\-]+/", "", $username); // XSS protection as we might print this value

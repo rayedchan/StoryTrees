@@ -50,28 +50,19 @@ if(isset($_POST['bookid'], $_POST['title']))
         exit();
     }
   
-    //Check values for child or sibling node case
-    if(isset($_POST['chapterid'],$_POST['createtype']))
+    //Check values for child node case
+    if(isset($_POST['chapterid']))
     {
         $chapterid = intval($_POST['chapterid']);
-        $createtype = intval($_POST['createtype']);
         
         //Make sure these fields are not empty
-        if(empty($chapterid) || empty($createtype))
+        if(empty($chapterid))
         {
             mysql_close($dblink);
             header("Location:../chapters.php?bid=$bookid&emptyfields2");
             exit();
         }
-        
-        //Validate values of createtype
-        if($createtype != constant('PARALLEL_VALUE') && $createtype != constant('EXTEND_VALUE'))
-        {
-            mysql_close($dblink);
-            header("Location:../chapters.php?bid=$bookid&invalidcreatetype");
-            exit();
-        }
-        
+
         //Determine if the selected chapter id exists
         $chapter_existence_query = "SELECT parent_id, height FROM chapters WHERE book_id = $bookid 
             AND chapter_id = $chapterid LIMIT 1";
@@ -86,42 +77,16 @@ if(isset($_POST['bookid'], $_POST['title']))
         }
         
         $selected_chapter_record = mysql_fetch_assoc($chapter_existence_result);
-        $selected_chapter_parent_id = $selected_chapter_record['parent_id'];
         $selected_chapter_height = $selected_chapter_record['height'];
         
-        //Root node cannot have parallel nodes
-        if($selected_chapter_height == 0 && $createtype == PARALLEL_VALUE)
-        {
-            mysql_close($dblink);
-            header("Location:../chapters.php?bid=$bookid&rootnodecannothavesiblingnodes");
-            exit();
-        }
-        
-        //Extending the selected chapter: Add new node a level down
-        else if($createtype == EXTEND_VALUE)
-        {
-            $new_node_height = $selected_chapter_height + 1;
-            $add_new_child_node_query = "INSERT INTO chapters 
-                (book_id, parent_id, height, title) VALUES 
-                ('$bookid', '$chapterid', '$new_node_height', '$title')";
-            mysql_query($add_new_child_node_query, $dblink) or die(mysql_error());
-            mysql_close($dblink);
-            header("Location:../chapters.php?bid=$bookid&childnodeadded");
-            exit();
-        }
-        
-        //Paralleling the selected chapter: Add new sibling node
-        //Equivalent to extending the selected node's parent 
-        else if($createtype == PARALLEL_VALUE)
-        {
-            $add_new_child_node_query = "INSERT INTO chapters 
-                (book_id, parent_id, height, title) VALUES 
-                ('$bookid', '$selected_chapter_parent_id' , '$selected_chapter_height', '$title')";
-            mysql_query($add_new_child_node_query, $dblink);
-            mysql_close($dblink);
-            header("Location:../chapters.php?bid=$bookid&siblingnodeadded");
-            exit();
-        }
+        $new_node_height = $selected_chapter_height + 1;
+        $add_new_child_node_query = "INSERT INTO chapters 
+            (book_id, parent_id, height, title) VALUES 
+            ('$bookid', '$chapterid', '$new_node_height', '$title')";
+        mysql_query($add_new_child_node_query, $dblink) or die(mysql_error());
+        mysql_close($dblink);
+        header("Location:../chapters.php?bid=$bookid&childnodeadded");
+        exit();
     }
     
     mysql_close($dblink);
@@ -130,5 +95,6 @@ if(isset($_POST['bookid'], $_POST['title']))
 }
 
  header("Location:../books.php");
+ exit();
 
 ?>
