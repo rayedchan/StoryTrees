@@ -9,13 +9,31 @@
             require('navigation.html');
             echo '<br />';
             require('classes/dbconnection.php');
+            require('classes/constants.php');
+            
+            $pageNumber = 0; //default to first page
+            $numberOfBookToDisplay = constant('NUMBER_OF_TO_DISPLAY');
+                       
+            //Determine result page number
+            if(isset($_GET['pageNumber']))
+                $pageNumber  = intval($_GET['pageNumber']);
+            
+            //Starting index of record to begin with
+            $startingIndex = $pageNumber  * $numberOfBookToDisplay;
             
             //Database connection
             $dblink = quickMySQLConnect();
             
+             //Number of total book records
+            $book_count_query = "SELECT COUNT(*) as numRecords FROM books";
+            $book_count_result_set = mysql_query($book_count_query, $dblink);
+            $book_count_row = mysql_fetch_assoc($book_count_result_set);
+            $total_books = $book_count_row['numRecords'];
+            $total_pages = ceil($total_books / $numberOfBookToDisplay);
+            
             //Query books 
             $book_query = "SELECT book_id, title, description,
-                create_date, last_modified, genre FROM books";
+                create_date, last_modified, genre FROM books LIMIT $startingIndex,$numberOfBookToDisplay";
             $books_result_set = mysql_query($book_query, $dblink);
             
             //Display books
@@ -39,6 +57,14 @@
             
             //Close database connection
             mysql_close($dblink);
+            
+            echo 'Page Numbers:  ';
+            //Display search pages
+            for($i = 0; $i < $total_pages; $i++)
+            {
+                $currentPage = $i + 1;
+                echo "<a href=\"books.php?pageNumber=$i\">$currentPage</a>&nbsp;&nbsp;";
+            }
         ?>
     </body>
 </html>
