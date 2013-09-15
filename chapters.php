@@ -11,9 +11,9 @@
         <title>Chapters</title>
         <script type="text/javascript">
             /*Call method to built the story tree diagram*/
-            jQuery(document).ready(function() {
+            /*jQuery(document).ready(function() {
                  $("#org").jOrgChart();
-            });
+            });*/
         </script>
     </head>
     
@@ -34,8 +34,6 @@
             if(isset($_GET['bid']) && is_numeric($_GET['bid']))
             {
                 $book_id = intval($_GET['bid']); //force integer conversion
-                //echo "Book Id: " . $book_id;
-                //echo "<br />";
                 
                 //Database connection
                 $dblink = quickMySQLConnect();
@@ -67,7 +65,7 @@
                     $height_result = mysql_query($tree_height_query, $dblink) or die(mysql_error());
                     $height_row = mysql_fetch_assoc($height_result);
                     $tree_height = $height_row['max_height'];
-                    $max_height = $$tree_height;
+                    $max_height = $tree_height;
                     //echo "Tree Height: " . $tree_height;
                     //echo "<br />";
 
@@ -90,19 +88,30 @@
                     //print_r($isLeafNodeMap);
                     //echo "<br /> <br />";
 
-                    //HashMap to store the merged results of nodes; Use ParentId as the Index
+                    //HashMap to store the merged results of nodes; Use ParentId as the index
                     $merger_node_data = array();
+                    
+                    //Stores the number of children of each parent node; Use ParentId as the index
+                    $merger_node_child_num = array();
 
                     //Store the HTML Tree
                     $tree_html = null;
+                    
+                    //Keep track of nodes on each level of tree
+                    $previous_level_num_nodes = 0;
+                    $current_level_num_nodes = 0;
 
                     //Iterate tree level by level starting at the highest height
                     while($tree_height >= 0)
                     {   
+                        //Store num nodes on previous level; Only works for root case
+                        $previous_level_num_nodes = $current_level_num_nodes;
+                        
                         //Retrieve all the chapters at a specific level for the selected book
-                        $chapters_query = "SELECT chapter_id, parent_id, height, title
+                        $chapters_query = "SELECT chapter_id, parent_id, height, title 
                             FROM chapters WHERE book_id = $book_id AND height = $tree_height";
                         $chapters_result_set = mysql_query($chapters_query, $dblink);
+                        $current_level_num_nodes = mysql_num_rows($chapters_result_set);
 
                         //Case 1: Root Node
                         if($tree_height == 0)
@@ -116,15 +125,67 @@
                             //Only the root node exists in tree
                             if($isLeafNode)
                             {
-                                 $tree_html = "<ul id=\"org\" style=\"display:none\"><li><a href=\"#\">$title</a><br /><font size=\"1px\"><i>Chapter Id: $chapter_id</i></font></li></ul>";
+                                 $tree_html = "<div align=\"center\" class=\"jOrgChart\">
+                                     <table cellpadding=\"0\" cellspacing=\"0\" border=\"0\">
+                                     <tbody><tr class=\"node-cells\"> <td class=\"node-cell\" colspan=\"2\">
+                                     <div class=\"node\" style=\"cursor: n-resize;\"><a href=\"#\" 
+                                     target=\"_blank\">$title</a><br /><font size=\"1px\">
+                                     <i>Chapter Id: $chapter_id</i></font></div></td></tr></tbody></table></div>";
                             }
 
                             else
                             {
+                                 $colspan = 2 * $previous_level_num_nodes;
+                                 
                                  //Merge root node with the entire descendent subtree
                                  $child_node_content = $merger_node_data[$chapter_id];
-                                 $parent_node_content = "<a href=\"#\">$title</a><br /><font size=\"1px\"><i>Chapter Id: $chapter_id</i></font>";
-                                 $tree_html = "<ul id=\"org\" style=\"display:none\"><li>$parent_node_content<ul>$child_node_content</ul></li></ul>";
+                                 $parent_node_content = "<tr class=\"node-cells\">
+                                     <td class=\"node-cell\" colspan=\"$colspan\"><div class=\"node\" style=\"cursor: n-resize;\">
+                                     <a href=\"#\" target=\"_blank\">$title</a><br><font size=\"1px\">
+                                     <i>Chapter Id: $chapter_id</i></font></div></td></tr>";
+
+                                //Generate HTML tree lines     
+                                $line_down = "";
+                                $tree_lines = "";
+                                
+                                //More than two child nodes
+                                if($previous_level_num_nodes >= 2)
+                                {
+                                    $line_down = "<tr><td colspan=\"$colspan\"><div class=\"line down\"></div></td></tr>";
+                                    
+                                    for($j = 2; $j <= $colspan; $j = $j + 2)
+                                    {
+                                        //First Node
+                                        if($j == 2)
+                                        {
+                                            $tree_lines = "<td class=\"line left\">&nbsp;</td> <td class=\"line right top\">&nbsp;</td>";
+                                        }
+
+                                        //Last Node
+                                        else if($j == $colspan)
+                                        {
+                                            $tree_lines = "<tr>" . $tree_lines . "<td class=\"line left top\">&nbsp;</td><td class=\"line right\">&nbsp;</td></tr>";
+                                        }
+
+                                        //Middle Node
+                                        else
+                                        {
+                                            $tree_lines = $tree_lines . "<td class=\"line left top\">&nbsp;</td><td class=\"line right top\">&nbsp;</td>";
+                                        }
+                                    }
+                                }
+                                
+                                //Exactly one child node
+                                else if($previous_level_num_nodes == 1)
+                                {
+                                    $line_down = "<tr><td colspan=\"$colspan\"><div class=\"line down\"></div></td></tr>";
+                                    $tree_lines = "<tr><td class=\"line left\">&nbsp;</td><td class=\"line right\">&nbsp;</td></tr>";
+                                }
+                                
+                                //Final Step for entire HTML tree
+                                $tree_html = "<div align=\"center\" class=\"jOrgChart\">
+                                     <table cellpadding=\"0\" cellspacing=\"0\" border=\"0\">
+                                     <tbody>$parent_node_content $line_down $tree_lines <tr>$child_node_content</tr></tbody></table></div>";
                             }
                         }
 
@@ -144,15 +205,27 @@
                                 if($key_exists)
                                 {                      
                                     $old_content = $merger_node_data[$parent_id];
-                                    $new_content = "<li><a href=\"#\">$title</a><br /><font size=\"1px\"><i>Chapter Id: $chapter_id</i></font></li>";
+                                    $new_content =  "<td class=\"node-container\" colspan=\"2\">
+                                        <table cellpadding=\"0\" cellspacing=\"0\" border=\"0\"><tbody>
+                                        <tr class=\"node-cells\"><td class=\"node-cell\" colspan=\"2\">
+                                        <div class=\"node\"><a href=\"#\" target=\"_blank\">$title</a><br />
+                                        <font size=\"1px\"><i>Chapter Id: $chapter_id</i></font></div></td>
+                                        </tr></tbody></table></td>";
                                     $merged_content = $old_content . $new_content;
                                     $merger_node_data[$parent_id] = $merged_content;
+                                    $merger_node_child_num[$parent_id]++;
                                 }
 
                                 //First Child Node Case
                                 else
                                 {
-                                    $merger_node_data[$parent_id] = "<li><a href=\"#\">$title</a><br /><font size=\"1px\"><i>Chapter Id: $chapter_id</i></font></li>";
+                                    $merger_node_data[$parent_id] = "<td class=\"node-container\" colspan=\"2\">
+                                        <table cellpadding=\"0\" cellspacing=\"0\" border=\"0\"><tbody>
+                                        <tr class=\"node-cells\"><td class=\"node-cell\" colspan=\"2\">
+                                        <div class=\"node\"><a href=\"#\" target=\"_blank\">$title</a><br />
+                                        <font size=\"1px\"><i>Chapter Id: $chapter_id</i></font></div></td>
+                                        </tr></tbody></table></td>";
+                                    $merger_node_child_num[$parent_id]++;
                                 }
                             }
                         }
@@ -178,47 +251,158 @@
                                     {
                                         //Merge current node content with its sibling nodes which already have been processed
                                         $current_constructed_content = $merger_node_data[$parent_id];
-                                        $new_node_content = "<li><a href=\"#\">$title</a><br /><font size=\"1px\"><i>Chapter Id: $chapter_id</i></font></li>";
+                                        $new_node_content = "<td class=\"node-container\" colspan=\"2\">
+                                            <table cellpadding=\"0\" cellspacing=\"0\" border=\"0\"><tbody>
+                                            <tr class=\"node-cells\"><td class=\"node-cell\" colspan=\"2\">
+                                            <div class=\"node\"><a href=\"#\" target=\"_blank\">$title</a><br />
+                                            <font size=\"1px\"><i>Chapter Id: $chapter_id</i></font></div></td>
+                                            </tr></tbody></table></td>";
                                         $merged_content = $current_constructed_content . $new_node_content;
                                         $merger_node_data[$parent_id] = $merged_content;
+                                        $merger_node_child_num[$parent_id]++;
                                     }
 
                                     //Merger Node Case
                                     else
                                     {
+                                        $current_node_child_num = $merger_node_child_num[$chapter_id];  //Determine current node's children
+                                        $colspan = 2 * $current_node_child_num;
+                                        
                                         //Merge child nodes of the current node content with current node's content (parent)
                                         $child_node_content = $merger_node_data[$chapter_id];
-                                        $parent_node_content = "<a href=\"#\">$title</a><br /><font size=\"1px\"><i>Chapter Id: $chapter_id</i></font>";
-                                        $merged_descendant_content = "<li>$parent_node_content<ul>$child_node_content</ul></li>";
+                                        $parent_node_content = "<tr class=\"node-cells\">
+                                            <td class=\"node-cell\" colspan=\"$colspan\"><div class=\"node\" style=\"cursor: n-resize;\">
+                                            <a href=\"#\" target=\"_blank\">$title</a><br><font size=\"1px\">
+                                            <i>Chapter Id: $chapter_id</i></font></div></td></tr>";                                  
+
+                                        //Generate HTML tree lines     
+                                        $line_down = "";
+                                        $tree_lines = "";
+                                
+                                        //More than two child nodes
+                                        if($current_node_child_num >= 2)
+                                        {
+                                            $line_down = "<tr><td colspan=\"$colspan\"><div class=\"line down\"></div></td></tr>";
+
+                                            for($j = 2; $j <= $colspan; $j = $j + 2)
+                                            {
+                                                //First Node
+                                                if($j == 2)
+                                                {
+                                                    $tree_lines = "<td class=\"line left\">&nbsp;</td> <td class=\"line right top\">&nbsp;</td>";
+                                                }
+
+                                                //Last Node
+                                                else if($j == $colspan)
+                                                {
+                                                    $tree_lines = "<tr>" . $tree_lines . "<td class=\"line left top\">&nbsp;</td><td class=\"line right\">&nbsp;</td></tr>";
+                                                }
+
+                                                //Middle Node
+                                                else
+                                                {
+                                                    $tree_lines = $tree_lines . "<td class=\"line left top\">&nbsp;</td><td class=\"line right top\">&nbsp;</td>";
+                                                }
+                                            }
+                                        }
+                                
+                                        //Exactly one child node
+                                        else if($current_node_child_num == 1)
+                                        {
+                                            $line_down = "<tr><td colspan=\"$colspan\"><div class=\"line down\"></div></td></tr>";
+                                            $tree_lines = "<tr><td class=\"line left\">&nbsp;</td><td class=\"line right\">&nbsp;</td></tr>";
+                                        }
+                                        
+
+                                        $merged_descendant_content = "<td class=\"node-container\" colspan=\"2\"> 
+                                            <table cellpadding=\"0\" cellspacing=\"0\" border=\"0\"><tbody>
+                                            $parent_node_content $line_down $tree_lines <tr>$child_node_content</tr>
+                                            </tbody></table></td>";
 
                                         //Merge with sibling nodes which already have been processed
                                         $current_constructed_content = $merger_node_data[$parent_id];
                                         $merger_node_data[$parent_id] = $current_constructed_content . $merged_descendant_content;
+                                        $merger_node_child_num[$parent_id]++;
                                     }  
                                 }
 
-                                //First Child Node of New Parent Case
+                                //First Child Node(currentNode) of New Parent Case
                                 else
                                 {
                                     //Leaf Node Case
                                     if($isLeafNode)
                                     {
-                                        $merger_node_data[$parent_id] = "<li><a href=\"#\">$title</a><br /><font size=\"1px\"><i>Chapter Id: $chapter_id</i></font></li>";
+                                        $merger_node_data[$parent_id] = "<td class=\"node-container\" colspan=\"2\">
+                                            <table cellpadding=\"0\" cellspacing=\"0\" border=\"0\"><tbody>
+                                            <tr class=\"node-cells\"><td class=\"node-cell\" colspan=\"2\">
+                                            <div class=\"node\"><a href=\"#\" target=\"_blank\">$title</a><br />
+                                            <font size=\"1px\"><i>Chapter Id: $chapter_id</i></font></div></td>
+                                            </tr></tbody></table></td>";
+                                        $merger_node_child_num[$parent_id]++;
                                     }
 
                                     //Merger Node Case
                                     else
                                     {
+                                        //Determine current node's children
+                                        $current_node_child_num = $merger_node_child_num[$chapter_id];
+                                        $colspan = 2 * $current_node_child_num;
+                                        
                                         //Merge current node's child nodes content with current node's content (parent)
                                         $child_node_content = $merger_node_data[$chapter_id];
-                                        $parent_node_content = "<a href=\"#\">$title</a><br /><font size=\"1px\"><i>Chapter Id: $chapter_id</i></font>";//The parent node is currently being inspected
-                                        $merged_content = "<li>$parent_node_content<ul>$child_node_content</ul></li>";
-                                        $merger_node_data[$parent_id] = $merged_content;
+                                        $parent_node_content = "<tr class=\"node-cells\">
+                                            <td class=\"node-cell\" colspan=\"$colspan\"><div class=\"node\" style=\"cursor: n-resize;\">
+                                            <a href=\"#\" target=\"_blank\">$title</a><br><font size=\"1px\">
+                                            <i>Chapter Id: $chapter_id</i></font></div></td></tr>";//The parent node is currently being inspected
+                                        
+                                        //Generate HTML tree lines     
+                                        $line_down = "";
+                                        $tree_lines = "";
+                                
+                                        //More than two child nodes
+                                        if($current_node_child_num >= 2)
+                                        {
+                                            $line_down = "<tr><td colspan=\"$colspan\"><div class=\"line down\"></div></td></tr>";
+
+                                            for($j = 2; $j <= $colspan; $j = $j + 2)
+                                            {
+                                                //First Node
+                                                if($j == 2)
+                                                {
+                                                    $tree_lines = "<td class=\"line left\">&nbsp;</td> <td class=\"line right top\">&nbsp;</td>";
+                                                }
+
+                                                //Last Node
+                                                else if($j == $colspan)
+                                                {
+                                                    $tree_lines = "<tr>" . $tree_lines . "<td class=\"line left top\">&nbsp;</td><td class=\"line right\">&nbsp;</td></tr>";
+                                                }
+
+                                                //Middle Node
+                                                else
+                                                {
+                                                    $tree_lines = $tree_lines . "<td class=\"line left top\">&nbsp;</td><td class=\"line right top\">&nbsp;</td>";
+                                                }
+                                            }
+                                        }
+                                
+                                        //Exactly one child node
+                                        else if($current_node_child_num == 1)
+                                        {
+                                            $line_down = "<tr><td colspan=\"$colspan\"><div class=\"line down\"></div></td></tr>";
+                                            $tree_lines = "<tr><td class=\"line left\">&nbsp;</td><td class=\"line right\">&nbsp;</td></tr>";
+                                        }
+
+                                        $merged_content = "<td class=\"node-container\" colspan=\"2\"> 
+                                            <table cellpadding=\"0\" cellspacing=\"0\" border=\"0\"><tbody>
+                                            $parent_node_content $line_down $tree_lines <tr>$child_node_content</tr>
+                                            </tbody></table></td>";
+                                        $merger_node_data[$parent_id] = $merged_content; //Store merged content into its parent
+                                        $merger_node_child_num[$parent_id]++; //increment current node's parent child counter
                                     }  
                                 }
                             } 
                         }
-
                         //Decrement the height
                         $tree_height--;
                     }//End While: Height Check

@@ -60,7 +60,8 @@
                             <td class="line left top">&nbsp;</td>
                             <td class="line right top">&nbsp;</td>
                             <td class="line left top">&nbsp;</td>
-                            <td class="line right">&nbsp;</td></tr>
+                            <td class="line right">&nbsp;</td>
+                        </tr>
                         <tr>
                             <td class="node-container" colspan="2">
                                 <table cellpadding="0" cellspacing="0" border="0"><tbody>
