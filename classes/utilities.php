@@ -49,4 +49,59 @@ function login_check($mysql_dblink)
      
     return false; 
 }
+
+/*
+ * Generates the tree lines inorder to render the
+ * tree in HTML
+ * @return array 
+ *      tree_line => HTML_CONTENT
+ *      tree_down => HTML CONTENT
+ */
+function generateTreeLinesHTML($num_child_nodes, $colspan)
+{
+    $html_tree_lines = array();
+    
+    //Generate HTML tree lines     
+    $line_down = "";
+    $tree_lines = "";
+
+    //More than two child nodes
+    if($num_child_nodes >= 2)
+    {
+        $line_down = "<tr><td colspan=\"$colspan\"><div class=\"line down\"></div></td></tr>";
+
+        for($j = 2; $j <= $colspan; $j = $j + 2)
+        {
+            //First Node
+            if($j == 2)
+            {
+                $tree_lines = "<td class=\"line left\">&nbsp;</td> <td class=\"line right top\">&nbsp;</td>";
+            }
+
+            //Last Node
+            else if($j == $colspan)
+            {
+                $tree_lines = "<tr>" . $tree_lines . "<td class=\"line left top\">&nbsp;</td><td class=\"line right\">&nbsp;</td></tr>";
+            }
+
+            //Middle Node
+            else
+            {
+                $tree_lines = $tree_lines . "<td class=\"line left top\">&nbsp;</td><td class=\"line right top\">&nbsp;</td>";
+            }
+        }
+    }
+
+    //Exactly one child node
+    else if($num_child_nodes == 1)
+    {
+        $line_down = "<tr><td colspan=\"$colspan\"><div class=\"line down\"></div></td></tr>";
+        $tree_lines = "<tr><td class=\"line left\">&nbsp;</td><td class=\"line right\">&nbsp;</td></tr>";
+    }
+    
+    $html_tree_lines['line_down'] = $line_down;
+    $html_tree_lines['tree_lines'] = $tree_lines;
+    
+    return $html_tree_lines;
+}
 ?>

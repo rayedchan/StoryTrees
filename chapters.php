@@ -4,17 +4,10 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <script type="text/javascript" src="js/jquery-1.10.2.min.js"></script>
         <script type="text/javascript" src="js/jquery-ui-1.10.3.min.js"></script>
-        <script type="text/javascript" src="js/jquery.jOrgChart.js"></script>
         <link rel="stylesheet" href="css/jquery.jOrgChart.css"/>
         <link rel="stylesheet" href="css/custom.css"/>
         <link rel="stylesheet" href="css/mycustom.css"/>
         <title>Chapters</title>
-        <script type="text/javascript">
-            /*Call method to built the story tree diagram*/
-            /*jQuery(document).ready(function() {
-                 $("#org").jOrgChart();
-            });*/
-        </script>
     </head>
     
     <body>
@@ -23,20 +16,39 @@
         </div>
         
         <?php
+        
+        /*
+         * Goal: Extract Story Tree data from database and render the data
+         *      as a tree structure in HTML.
+         * Data Structures:
+         *      HashMap: ParentId => Content of all of its descendents
+         * Definition: Story Tree represent a multi-storyline book.
+         *      Each node represents a chapter from a book.
+         *      Each level of the tree represent the chapter number. Ex.
+         *      The root node is chapter one. The children nodes of the root node
+         *      are Chapter 2.
+         * Algorithm:
+         * Iterate the tree structure starting at the max height of the tree which
+         * is at the bottom most of the tree. At each level, each node will be inspected
+         * and the content will be merge with its sibling nodes, which are nodes with
+         * the same parent. The html content (determined by how jOrgChart plugin works) 
+         * of each node will be store in a HashMap using its parent's key. Sibling nodes
+         * will merge together and should not interfere with cousin nodes.   
+         */
+        
             require('navigation.html');
             require('classes/dbconnection.php');
+            require('classes/utilities.php');
             echo '<br /> <br />';
             
-            $book_id  = null;
-            $chapters_num_rows = null;
+            $book_id  = null; //book id of the current book being viewed
+            $chapters_num_rows = null; //number of chapters in current book
 
             //Check if the book id exist and is an numerical
             if(isset($_GET['bid']) && is_numeric($_GET['bid']))
             {
                 $book_id = intval($_GET['bid']); //force integer conversion
-                
-                //Database connection
-                $dblink = quickMySQLConnect();
+                $dblink = quickMySQLConnect(); //database connection
                 
                 //Determine if book exists
                 $book_existence_query = "SELECT 1 FROM books WHERE book_id = $book_id";
@@ -51,7 +63,7 @@
                     exit();
                 }
                 
-                //Determine if any chapters exits for book
+                //Determine if any chapters exists for book
                 $chapters_query = "SELECT 1 FROM chapters WHERE book_id = $book_id";
                 $chapters_result = mysql_query($chapters_query, $dblink);
                 $chapters_num_rows = mysql_num_rows($chapters_result);
@@ -64,10 +76,8 @@
                         FROM chapters WHERE book_id = $book_id LIMIT 1";
                     $height_result = mysql_query($tree_height_query, $dblink) or die(mysql_error());
                     $height_row = mysql_fetch_assoc($height_result);
-                    $tree_height = $height_row['max_height'];
-                    $max_height = $tree_height;
-                    //echo "Tree Height: " . $tree_height;
-                    //echo "<br />";
+                    $tree_height = $height_row['max_height']; //keep of the current height being inspected
+                    $max_height = $tree_height; //this will be fixed as the max height
 
                     //Retrieve all the leaf node in a given tree
                     $leaf_node_query = "SELECT c1.chapter_id as chapter_id, c1.title as title FROM chapters AS c1
@@ -76,7 +86,6 @@
                         WHERE c2.parent_id IS NULL AND c1.book_id = $book_id";
                     $leaf_node_result = mysql_query($leaf_node_query, $dblink);
                     $num_leaf_nodes = mysql_numrows($leaf_node_result);
-                    //echo "Number of Leaf Nodes: $num_leaf_nodes <br />";
                     $isLeafNodeMap = array(); //Associative Array to store leaf nodes; ChapterId(NodeId) => Title
                     for($i = 1; $i <= $num_leaf_nodes; $i++)
                     {
@@ -85,33 +94,18 @@
                         $title = $leaf_node_record['title'];
                         $isLeafNodeMap[$nodeId] = $title;
                     }
-                    //print_r($isLeafNodeMap);
-                    //echo "<br /> <br />";
 
-                    //HashMap to store the merged results of nodes; Use ParentId as the index
-                    $merger_node_data = array();
+                    $merger_node_data = array(); //HashMap to store the merged results of nodes; Use ParentId as the index
+                    $merger_node_child_num = array(); //Stores the number of children of each parent node; Use ParentId as the index
+                    $tree_html = null; //Store the HTML Tree
                     
-                    //Stores the number of children of each parent node; Use ParentId as the index
-                    $merger_node_child_num = array();
-
-                    //Store the HTML Tree
-                    $tree_html = null;
-                    
-                    //Keep track of nodes on each level of tree
-                    $previous_level_num_nodes = 0;
-                    $current_level_num_nodes = 0;
-
                     //Iterate tree level by level starting at the highest height
                     while($tree_height >= 0)
                     {   
-                        //Store num nodes on previous level; Only works for root case
-                        $previous_level_num_nodes = $current_level_num_nodes;
-                        
                         //Retrieve all the chapters at a specific level for the selected book
                         $chapters_query = "SELECT chapter_id, parent_id, height, title 
                             FROM chapters WHERE book_id = $book_id AND height = $tree_height";
                         $chapters_result_set = mysql_query($chapters_query, $dblink);
-                        $current_level_num_nodes = mysql_num_rows($chapters_result_set);
 
                         //Case 1: Root Node
                         if($tree_height == 0)
@@ -133,9 +127,11 @@
                                      <i>Chapter Id: $chapter_id</i></font></div></td></tr></tbody></table></div>";
                             }
 
+                            //Merge current processed content, which includes all the descendents, with the root node
                             else
                             {
-                                 $colspan = 2 * $previous_level_num_nodes;
+                                 $root_num_child_nodes = $merger_node_child_num[$chapter_id]; //number of child node the root node has
+                                 $colspan = 2 * $root_num_child_nodes;
                                  
                                  //Merge root node with the entire descendent subtree
                                  $child_node_content = $merger_node_data[$chapter_id];
@@ -144,46 +140,13 @@
                                      <a href=\"#\" target=\"_blank\">$title</a><br><font size=\"1px\">
                                      <i>Chapter Id: $chapter_id</i></font></div></td></tr>";
 
-                                //Generate HTML tree lines     
-                                $line_down = "";
-                                $tree_lines = "";
-                                
-                                //More than two child nodes
-                                if($previous_level_num_nodes >= 2)
-                                {
-                                    $line_down = "<tr><td colspan=\"$colspan\"><div class=\"line down\"></div></td></tr>";
-                                    
-                                    for($j = 2; $j <= $colspan; $j = $j + 2)
-                                    {
-                                        //First Node
-                                        if($j == 2)
-                                        {
-                                            $tree_lines = "<td class=\"line left\">&nbsp;</td> <td class=\"line right top\">&nbsp;</td>";
-                                        }
-
-                                        //Last Node
-                                        else if($j == $colspan)
-                                        {
-                                            $tree_lines = "<tr>" . $tree_lines . "<td class=\"line left top\">&nbsp;</td><td class=\"line right\">&nbsp;</td></tr>";
-                                        }
-
-                                        //Middle Node
-                                        else
-                                        {
-                                            $tree_lines = $tree_lines . "<td class=\"line left top\">&nbsp;</td><td class=\"line right top\">&nbsp;</td>";
-                                        }
-                                    }
-                                }
-                                
-                                //Exactly one child node
-                                else if($previous_level_num_nodes == 1)
-                                {
-                                    $line_down = "<tr><td colspan=\"$colspan\"><div class=\"line down\"></div></td></tr>";
-                                    $tree_lines = "<tr><td class=\"line left\">&nbsp;</td><td class=\"line right\">&nbsp;</td></tr>";
-                                }
-                                
-                                //Final Step for entire HTML tree
-                                $tree_html = "<div align=\"center\" class=\"jOrgChart\">
+                                 //Get the lines for the HTML Tree structure
+                                 $html_tree_lines = generateTreeLinesHTML($root_num_child_nodes, $colspan);
+                                 $line_down = $html_tree_lines['line_down'];
+                                 $tree_lines = $html_tree_lines['tree_lines'];
+                                 
+                                 //Final Step for entire HTML tree
+                                 $tree_html = "<div align=\"center\" class=\"jOrgChart\">
                                      <table cellpadding=\"0\" cellspacing=\"0\" border=\"0\">
                                      <tbody>$parent_node_content $line_down $tree_lines <tr>$child_node_content</tr></tbody></table></div>";
                             }
@@ -275,44 +238,10 @@
                                             <a href=\"#\" target=\"_blank\">$title</a><br><font size=\"1px\">
                                             <i>Chapter Id: $chapter_id</i></font></div></td></tr>";                                  
 
-                                        //Generate HTML tree lines     
-                                        $line_down = "";
-                                        $tree_lines = "";
-                                
-                                        //More than two child nodes
-                                        if($current_node_child_num >= 2)
-                                        {
-                                            $line_down = "<tr><td colspan=\"$colspan\"><div class=\"line down\"></div></td></tr>";
-
-                                            for($j = 2; $j <= $colspan; $j = $j + 2)
-                                            {
-                                                //First Node
-                                                if($j == 2)
-                                                {
-                                                    $tree_lines = "<td class=\"line left\">&nbsp;</td> <td class=\"line right top\">&nbsp;</td>";
-                                                }
-
-                                                //Last Node
-                                                else if($j == $colspan)
-                                                {
-                                                    $tree_lines = "<tr>" . $tree_lines . "<td class=\"line left top\">&nbsp;</td><td class=\"line right\">&nbsp;</td></tr>";
-                                                }
-
-                                                //Middle Node
-                                                else
-                                                {
-                                                    $tree_lines = $tree_lines . "<td class=\"line left top\">&nbsp;</td><td class=\"line right top\">&nbsp;</td>";
-                                                }
-                                            }
-                                        }
-                                
-                                        //Exactly one child node
-                                        else if($current_node_child_num == 1)
-                                        {
-                                            $line_down = "<tr><td colspan=\"$colspan\"><div class=\"line down\"></div></td></tr>";
-                                            $tree_lines = "<tr><td class=\"line left\">&nbsp;</td><td class=\"line right\">&nbsp;</td></tr>";
-                                        }
-                                        
+                                        //Get the lines for the HTML Tree structure
+                                        $html_tree_lines = generateTreeLinesHTML($current_node_child_num, $colspan);
+                                        $line_down = $html_tree_lines['line_down'];
+                                        $tree_lines = $html_tree_lines['tree_lines'];
 
                                         $merged_descendant_content = "<td class=\"node-container\" colspan=\"2\"> 
                                             <table cellpadding=\"0\" cellspacing=\"0\" border=\"0\"><tbody>
@@ -355,43 +284,10 @@
                                             <a href=\"#\" target=\"_blank\">$title</a><br><font size=\"1px\">
                                             <i>Chapter Id: $chapter_id</i></font></div></td></tr>";//The parent node is currently being inspected
                                         
-                                        //Generate HTML tree lines     
-                                        $line_down = "";
-                                        $tree_lines = "";
-                                
-                                        //More than two child nodes
-                                        if($current_node_child_num >= 2)
-                                        {
-                                            $line_down = "<tr><td colspan=\"$colspan\"><div class=\"line down\"></div></td></tr>";
-
-                                            for($j = 2; $j <= $colspan; $j = $j + 2)
-                                            {
-                                                //First Node
-                                                if($j == 2)
-                                                {
-                                                    $tree_lines = "<td class=\"line left\">&nbsp;</td> <td class=\"line right top\">&nbsp;</td>";
-                                                }
-
-                                                //Last Node
-                                                else if($j == $colspan)
-                                                {
-                                                    $tree_lines = "<tr>" . $tree_lines . "<td class=\"line left top\">&nbsp;</td><td class=\"line right\">&nbsp;</td></tr>";
-                                                }
-
-                                                //Middle Node
-                                                else
-                                                {
-                                                    $tree_lines = $tree_lines . "<td class=\"line left top\">&nbsp;</td><td class=\"line right top\">&nbsp;</td>";
-                                                }
-                                            }
-                                        }
-                                
-                                        //Exactly one child node
-                                        else if($current_node_child_num == 1)
-                                        {
-                                            $line_down = "<tr><td colspan=\"$colspan\"><div class=\"line down\"></div></td></tr>";
-                                            $tree_lines = "<tr><td class=\"line left\">&nbsp;</td><td class=\"line right\">&nbsp;</td></tr>";
-                                        }
+                                        //Get the lines for the HTML Tree structure
+                                        $html_tree_lines = generateTreeLinesHTML($current_node_child_num, $colspan);
+                                        $line_down = $html_tree_lines['line_down'];
+                                        $tree_lines = $html_tree_lines['tree_lines'];
 
                                         $merged_content = "<td class=\"node-container\" colspan=\"2\"> 
                                             <table cellpadding=\"0\" cellspacing=\"0\" border=\"0\"><tbody>
@@ -403,16 +299,14 @@
                                 }
                             } 
                         }
-                        //Decrement the height
-                        $tree_height--;
+                        
+                        $tree_height--; //Decrement the height
                     }//End While: Height Check
                     
-                    //Display HTML story tree
-                    echo $tree_html; 
+                    echo $tree_html;  //Display HTML story tree
                 }//End If: Chapters Check 
                 
-                //Close database connection
-                mysql_close($dblink);
+                mysql_close($dblink); //Close database connection
             }//End If: Post Process Check
             
             //redirect to book page
