@@ -5,7 +5,7 @@
         <title>Create a Book</title>
     </head>
     <body>
-        <?php require('navigation.html'); ?>
+        <?php require('include/navigation.html'); ?>
         <h2>Create a Book</h2>
         <form method="post" action="post_scripts/post_createbook.php">
             <table>

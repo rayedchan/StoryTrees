@@ -1,4 +1,5 @@
-<!-- Add Chapter Form -->
+<!-- Add Chapter Form
+Side Node: action url is relative to the script that is including this script -->
 <form method="post" action="post_scripts/post_createchapter.php">
     <table>
         <tr>

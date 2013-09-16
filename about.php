@@ -9,7 +9,7 @@
     </head>
 
     <body>
-        <?php require('navigation.html'); ?>
+        <?php require('include/navigation.html'); ?>
 
         <div>
             <img class="background" src="images/Facebook_in_the_dark_widewall_by_will_yen.jpg">
@@ -42,7 +42,7 @@
                 </p>
             </div>
         
-            <!--Story Tree full output from javascript -->
+            <!--Story Tree full output from javaScript jOrgChart plugin -->
             <div class="jOrgChart">
                 <table cellpadding="0" cellspacing="0" border="0">
                     <tbody>
@@ -64,53 +64,64 @@
                         </tr>
                         <tr>
                             <td class="node-container" colspan="2">
-                                <table cellpadding="0" cellspacing="0" border="0"><tbody>
-                                    <tr class="node-cells">
-                                        <td class="node-cell" colspan="2"><div class="node"><a href="#" target="_blank">Chapter 2a</a></div></td>
-                                    </tr>
-                                </tbody></table>
+                                <table cellpadding="0" cellspacing="0" border="0">
+                                    <tbody>
+                                        <tr class="node-cells">
+                                            <td class="node-cell" colspan="2"><div class="node"><a href="#" target="_blank">Chapter 2a</a></div></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
                             </td>
                             <td class="node-container" colspan="2">
-                                <table cellpadding="0" cellspacing="0" border="0"><tbody>
-                                    <tr class="node-cells"> 
-                                        <td class="node-cell" colspan="4"><div class="node" style="cursor: n-resize;"><a href="#" target="_blank">Chapter 2b</a></div></td>
-                                    </tr>
-                                    <tr>
-                                        <td colspan="4"><div class="line down"></div></td>
-                                    </tr>
-                                    <tr>
-                                        <td class="line left">&nbsp;</td>
-                                        <td class="line right top">&nbsp;</td>
-                                        <td class="line left top">&nbsp;</td>
-                                        <td class="line right">&nbsp;</td>
-                                    </tr>
-                                    <tr>
-                                        <td class="node-container" colspan="2">
-                                            <table cellpadding="0" cellspacing="0" border="0"><tbody>
-                                                    <tr class="node-cells">
-                                                        <td class="node-cell" colspan="2"><div class="node"><a href="#" target="_blank">Chapter 3a</a></div></td>
-                                                    </tr>
-                                            </tbody></table>
-                                        </td>
-                                        <td class="node-container" colspan="2">
-                                            <table cellpadding="0" cellspacing="0" border="0"><tbody>
-                                                    <tr class="node-cells">
-                                                        <td class="node-cell" colspan="2"><div class="node"><a href="#" target="_blank">Chapter 3b</a></div></td>
-                                                    </tr>
-                                            </tbody></table>
-                                        </td>
-                                    </tr>
-                                </tbody></table>
+                                <table cellpadding="0" cellspacing="0" border="0">
+                                    <tbody>
+                                        <tr class="node-cells"> 
+                                            <td class="node-cell" colspan="4"><div class="node" style="cursor: n-resize;"><a href="#" target="_blank">Chapter 2b</a></div></td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="4"><div class="line down"></div></td>
+                                        </tr>
+                                        <tr>
+                                            <td class="line left">&nbsp;</td>
+                                            <td class="line right top">&nbsp;</td>
+                                            <td class="line left top">&nbsp;</td>
+                                            <td class="line right">&nbsp;</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="node-container" colspan="2">
+                                                <table cellpadding="0" cellspacing="0" border="0">
+                                                    <tbody>
+                                                        <tr class="node-cells">
+                                                            <td class="node-cell" colspan="2"><div class="node"><a href="#" target="_blank">Chapter 3a</a></div></td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </td>
+                                            <td class="node-container" colspan="2">
+                                                <table cellpadding="0" cellspacing="0" border="0">
+                                                    <tbody>
+                                                        <tr class="node-cells">
+                                                            <td class="node-cell" colspan="2"><div class="node"><a href="#" target="_blank">Chapter 3b</a></div></td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
                             </td>
                             <td class="node-container" colspan="2">
-                                <table cellpadding="0" cellspacing="0" border="0"><tbody>
+                                <table cellpadding="0" cellspacing="0" border="0">
+                                    <tbody>
                                         <tr class="node-cells">
                                             <td class="node-cell" colspan="2"><div class="node"><a href="#" target="_blank">Chapter 2c</a><br><font size="1px"><i>Author: Anonymous</i></font></div></td>
                                         </tr>
-                                    </tbody></table>
+                                    </tbody>
+                                </table>
                             </td>
                             <td class="node-container" colspan="2">
-                                <table cellpadding="0" cellspacing="0" border="0"><tbody>
+                                <table cellpadding="0" cellspacing="0" border="0">
+                                    <tbody>
                                         <tr class="node-cells">
                                             <td class="node-cell" colspan="4"><div class="node" style="cursor: n-resize;"><a href="#" target="_blank">Chapter 2d</a></div></td>
                                         </tr>
@@ -125,14 +136,17 @@
                                         </tr>
                                         <tr>
                                             <td class="node-container" colspan="2">
-                                                <table cellpadding="0" cellspacing="0" border="0"><tbody>
+                                                <table cellpadding="0" cellspacing="0" border="0">
+                                                    <tbody>
                                                         <tr class="node-cells">
                                                             <td class="node-cell" colspan="2"><div class="node"><a href="#" target="_blank">Chapter 3c</a></div></td>
                                                         </tr>
-                                                </tbody></table>
+                                                    </tbody>
+                                                </table>
                                             </td>
                                             <td class="node-container" colspan="2">
-                                                <table cellpadding="0" cellspacing="0" border="0"><tbody>
+                                                <table cellpadding="0" cellspacing="0" border="0">
+                                                    <tbody>
                                                         <tr class="node-cells">
                                                             <td class="node-cell" colspan="2"><div class="node"><a href="#" target="_blank">Chapter 3d</a></div></td>
                                                         </tr>
@@ -140,14 +154,13 @@
                                                 </table>
                                             </td>
                                         </tr>
-                                </tbody></table>
+                                    </tbody>
+                                </table>
                             </td>
                         </tr>  
                     </tbody>
                 </table>
-            </div>
-            <!--End Story Tree -->
-            
+            </div> <!--End Story Tree -->
         </div>
     </body>
 </html>

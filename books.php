@@ -6,7 +6,7 @@
     </head>
     <body>
         <?php
-            require('navigation.html');
+            require('include/navigation.html');
             echo '<br />';
             require('classes/dbconnection.php');
             require('classes/constants.php');

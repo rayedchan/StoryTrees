@@ -36,7 +36,7 @@
          * will merge together and should not interfere with cousin nodes.   
          */
         
-            require('navigation.html');
+            require('include/navigation.html');
             require('classes/dbconnection.php');
             require('classes/utilities.php');
             echo '<br /> <br />';
@@ -194,7 +194,7 @@
                         }
 
                         //Case 3: Middle layer of the tree
-                        //Need to handle merger nodes and remaining leaf nodes
+                        //Handles merger nodes and remaining leaf nodes
                         else 
                         {
                             //Iterate each chapter from result set
@@ -317,7 +317,7 @@
             }
             
             //Create Chapter Form
-            require('createchapter.php');
+            require('forms/createchapter.php');
         ?>
     </body>
 </html>

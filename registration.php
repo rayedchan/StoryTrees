@@ -8,7 +8,7 @@
         <link rel="stylesheet" href="css/mycustom.css"/>
     </head>
     <body>
-        <?php require('navigation.html'); ?>
+        <?php require('include/navigation.html'); ?>
         <div>
             <img class="background" src="images/whale_hellooow__by_roiuky-d6l54v3.png">
         </div>

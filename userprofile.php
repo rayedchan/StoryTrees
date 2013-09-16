@@ -8,7 +8,7 @@
         <?php
             require('classes/dbconnection.php');
             require('classes/utilities.php');
-            require('navigation.html');
+            require('include/navigation.html');
             echo '<br />';
             sec_session_start();
             

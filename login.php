@@ -8,7 +8,7 @@
     </head>
 
     <body>
-        <?php require('navigation.html'); ?>
+        <?php require('include/navigation.html'); ?>
         <div>
             <img class="background" src="images/aesir_burough_by_ungdi_sea-d6l4g35.jpg">
         </div>
