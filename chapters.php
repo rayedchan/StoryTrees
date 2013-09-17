@@ -4,16 +4,18 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <script type="text/javascript" src="js/jquery-1.10.2.min.js"></script>
         <script type="text/javascript" src="js/jquery-ui-1.10.3.min.js"></script>
+        <script type="text/javascript" src="js/javascript-tabs.js"></script>
         <link rel="stylesheet" href="css/jquery.jOrgChart.css"/>
         <link rel="stylesheet" href="css/jquery.jOrgChart.customizable.css"/>
         <link rel="stylesheet" href="css/mycustom.css"/>
+        <link rel="stylesheet" href="css/javascript-tabs.css"/>
         <title>Chapters</title>
     </head>
     
-    <body>
-        <div>
+    <body onload="init()">
+        <!--<div>
             <img class="background" src="images/Facebook_in_the_dark_widewall_by_will_yen.jpg">
-        </div>
+        </div>-->
         
         <?php
         
@@ -43,6 +45,7 @@
             
             $book_id  = null; //book id of the current book being viewed
             $chapters_num_rows = null; //number of chapters in current book
+            $tree_html = null; //Store the HTML Tree
 
             //Check if the book id exist and is an numerical
             if(isset($_GET['bid']) && is_numeric($_GET['bid']))
@@ -97,7 +100,6 @@
 
                     $merger_node_data = array(); //HashMap to store the merged results of nodes; Use ParentId as the index
                     $merger_node_child_num = array(); //Stores the number of children of each parent node; Use ParentId as the index
-                    $tree_html = null; //Store the HTML Tree
                     
                     //Iterate tree level by level starting at the highest height
                     while($tree_height >= 0)
@@ -302,8 +304,6 @@
                         
                         $tree_height--; //Decrement the height
                     }//End While: Height Check
-                    
-                    echo $tree_html;  //Display HTML story tree
                 }//End If: Chapters Check 
                 
                 mysql_close($dblink); //Close database connection
@@ -315,9 +315,21 @@
                 header('Location:books.php?unset');
                 exit();
             }
+             
+            //Display Tabs
+            echo "<ul id=\"tabs\"> 
+                    <li><a href=\"#treeview\">Tree View</a></li>
+                    <li><a href=\"#storylineview\">Storyline View</a></li>
+                  </ul>";
             
-            //Create Chapter Form
-            require('forms/createchapter.php');
+            //Wrap each content in a tabContainer
+            echo "<div class=\"tabContent\" id=\"treeview\">"; 
+                require('forms/createchapter.php');  //Render Create Chapter Form
+                echo "$tree_html";//Display HTML story tree
+            echo "</div>";
+            echo "<div class=\"tabContent\" id=\"storylineview\">Display every storyline in the current tree.</div>";
+            
+                   
         ?>
     </body>
 </html>

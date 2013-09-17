@@ -9,9 +9,9 @@
 
     <body>
         <?php require('include/navigation.html'); ?>
-        <div>
+        <!--<div>
             <img class="background" src="images/aesir_burough_by_ungdi_sea-d6l4g35.jpg">
-        </div>
+        </div>-->
         <form method="post" id="login" class="login" name="login" action="post_scripts/post_login.php">
             <div align="center">
                 <h2>Log In</h2>

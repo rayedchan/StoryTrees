@@ -12,8 +12,8 @@
 
     <body>
         <?php  require('include/navigation.html'); ?>
-        <div>
+        <!--<div>
             <img class="background" src="images/Facebook_in_the_dark_widewall_by_will_yen.jpg">
-        </div>
+        </div>-->
     </body>
 </html>

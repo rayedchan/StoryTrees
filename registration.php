@@ -9,9 +9,9 @@
     </head>
     <body>
         <?php require('include/navigation.html'); ?>
-        <div>
+        <!--<div>
             <img class="background" src="images/whale_hellooow__by_roiuky-d6l54v3.png">
-        </div>
+        </div>-->
         <form method="post" id="createaccount" class="register" name="createaccount" action="post_scripts/post_registration.php" >
             <div align="center">
                 <h2>Registration Form</h2>
