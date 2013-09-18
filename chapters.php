@@ -32,11 +32,114 @@
          * Algorithm:
          * Iterate the tree structure starting at the max height of the tree which
          * is at the bottom most of the tree. At each level, each node will be inspected
-         * and the content will be merge with its sibling nodes, which are nodes with
-         * the same parent. The html content (determined by how jOrgChart plugin works) 
-         * of each node will be store in a HashMap using its parent's key. Sibling nodes
-         * will merge together and should not interfere with cousin nodes.   
-         */
+         * and the current node's content will be merge with its sibling nodes, which are nodes with
+         * the same parent, that have aldready been inspected. The html content (determined by how jOrgChart plugin works) 
+         * of each node will be store in a HashMap using its parent's key. Thus, sibling nodes' content
+         * will merge together and should not interfere with cousin nodes. Eventually 
+         * the content of every node will merge together and converge to the root node.
+         * Each node will only be visited once. 
+         * 
+         * Example: This constructs an HTML Tree used in the jOrgChart Plugin. This
+         * algorithm can be applied to generate the raw HTML that jOrgChart Plugin
+         * generates for you.
+         * 
+         *         1                    H = 0
+         *   ______|_________
+         *   \     \    \    \
+         *   2     3     4    5         H = 1
+         * __|__       __|__
+         * \    \      \    \
+         *  6    7      8    9          H = 2
+         * 
+         * Data Structure: 
+         *  HashMap: ParentId -> Constructed Content
+         * 
+         * Defintion:
+         *  Leaf Node = has no children node
+         *  Merger Node = has children node
+         * 
+         * Possible Cases:
+         * 1. Empty tree
+         * 2. Only the Root node exists
+         * 3. Root Node with children node
+         * 
+         * Possiable Subcases:
+         * 1. Leaf Node + First Apperance of its Parent Node in HashMap
+         * 2. Leaf Node + Parent Node in HashMap exists (Merge with already inspected sibling node)
+         * 3. Merger Node + First Apperance of its Parent Node in HashMap
+         * 4. Merger Node + Parent Node in HashMap exists 
+         * 
+         * BEGIN: 
+         *  OUTER LOOP: Iterate each node at height 2.
+         *      First iteration at node 6 (Subcase 1):
+         *      Insert 6's parent key into HashMap since it does not exist
+         *          2 -> <li>6</li>
+         *  
+         *      Second iteration at node 7 (Subcase 2):
+         *      Check if parent key exist in hashmap => Yes it does, so construct current node content and merge
+         *          2 -> <li>6</li><li>7</li>
+         * 
+         *      Third iteration at node 8 (Subcase 1):
+         *      Insert 8's parent key
+         *          2 -> <li>6</li><li>7</li>
+         *          4 -> <li>8</li>
+         * 
+         *      Fourth iteration at node 9 (Subcase 2):
+         *      Merge content of 9 into 5.
+         *          2 -> <li>6</li><li>7</li>
+         *          4 -> <li>8</li><li>9</li>
+         * 
+         *  OUTER LOOP: Iterate each node at height 1.
+         *      First iteration at node 2 (Subcase 3):
+         *      Construct <li> tag with node 2 content and
+         *      embed <ul> tag inside the <li> tag. The embedded <ul>
+         *      contains all the descendent nodes includes children node and
+         *      its child's children. For simplicity, HashMap[2] = <li>6</li><li>7</li>.
+         *          2 -> <li>6</li><li>7</li>
+         *          4 -> <li>8</li><li>9</li>
+         *          1 -> <li>2<ul>HashMap[2]</ul></li>
+         * 
+         *      Second iteration at node 3 (Subcase 2)
+         *          2 -> <li>6</li><li>7</li>    
+         *          4 -> <li>8</li><li>9</li>
+         *          1 -> <li>2<ul>HashMap[2]</ul></li><li>3</li>
+         *      
+         *      Third iteration at node 4 (Subcase 4):
+         *      Wrap HashMap[4] = <li>8</li><li>9</li>
+         *      with <ul> tags and after enclose with <li> 
+         *      tags with current content inside. Append current content
+         *      to the existing content in its parent node.
+         *          2 -> <li>6</li><li>7</li>
+         *          4 -> <li>8</li><li>9</li>
+         *          1 -> <li>2<ul>HashMap[2]</ul></li><li>3</li><li>4<ul>HashMap[4]</ul></li>
+         * 
+         *      Fourth iteration at node 5 (Subcase 2) 
+         *          2 -> <li>6</li><li>7</li>
+         *          4 -> <li>8</li><li>9</li>
+         *          1 -> <li>2<ul>HashMap[2]</ul></li><li>3</li><li>4<ul>HashMap[4]</ul></li><li>5</li>
+         * 
+         *  OUTER LOOP: Iterate each node at height 0.
+         *      First iteration at Root Node:
+         *          2 -> <li>6</li><li>7</li>
+         *          4 -> <li>8</li><li>9</li>
+         *          1 -> <ul><li>1<ul><li>2<ul>HashMap[2]</ul></li><li>3</li><li>4<ul>HashMap[4]</ul></li><li>5</li></ul></li></ul>   
+         *  
+         * Final HTML
+         *  <ul>
+         *      <li> 1
+         *          <ul>
+         *             <li>2<ul><li>6</li><li>7</li></ul></li>
+         *             <li>3</li>
+         *             <li>4<ul><li>8</li><li>9</li></ul></li>
+         *             <li>5</li>
+         *          </ul>
+         *      </li>
+         *  </ul>
+         * END:
+         * 
+         * 
+         * 
+         */         
         
             require('include/navigation.html');
             require('classes/dbconnection.php');
@@ -46,6 +149,7 @@
             $book_id  = null; //book id of the current book being viewed
             $chapters_num_rows = null; //number of chapters in current book
             $tree_html = null; //Store the HTML Tree
+            //$paths = array(); //Stores all the paths in a tree
 
             //Check if the book id exist and is an numerical
             if(isset($_GET['bid']) && is_numeric($_GET['bid']))
