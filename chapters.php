@@ -137,7 +137,18 @@
          *  </ul>
          * END:
          * 
-         * 
+         * The tree paths are build during the HTML Tree generation.
+         * The leaf node id is used as the index.
+         * $paths:
+         *      [6]: 1/2/6
+         *      [7]: 1/2/7
+         *      [3]: 1/3
+         *      [8]: 1/4/8
+         *      [9]: 1/4/9
+         *      [5]: 1/5
+         * Leaf node are added to array along with it parent.
+         * When the parent node is detected, prepend its parent to
+         * string.
          * 
          */         
         
@@ -149,7 +160,8 @@
             $book_id  = null; //book id of the current book being viewed
             $chapters_num_rows = null; //number of chapters in current book
             $tree_html = null; //Store the HTML Tree
-            //$paths = array(); //Stores all the paths in a tree
+            $paths = array(); //Stores all the paths in a tree
+            $chapter_node_map = array(); //Stores each node content
 
             //Check if the book id exist and is an numerical
             if(isset($_GET['bid']) && is_numeric($_GET['bid']))
@@ -231,6 +243,7 @@
                                      <div class=\"node\" style=\"cursor: n-resize;\"><a href=\"#\" 
                                      target=\"_blank\">$title</a><br /><font size=\"1px\">
                                      <i>Chapter Id: $chapter_id</i></font></div></td></tr></tbody></table></div>";
+                                 $paths[$chapter_id] = $chapter_id;
                             }
 
                             //Merge current processed content, which includes all the descendents, with the root node
@@ -269,6 +282,7 @@
                                 $parent_id = $row['parent_id'];
                                 $title = $row['title'];
                                 $key_exists = array_key_exists($parent_id, $merger_node_data);
+                                $paths[$chapter_id] =  $parent_id . '/' . $chapter_id;
 
                                 //Sibling Merge Case
                                 if($key_exists)
@@ -329,6 +343,7 @@
                                         $merged_content = $current_constructed_content . $new_node_content;
                                         $merger_node_data[$parent_id] = $merged_content;
                                         $merger_node_child_num[$parent_id]++;
+                                        $paths[$chapter_id] =  $parent_id . '/' . $chapter_id;
                                     }
 
                                     //Merger Node Case
@@ -358,6 +373,9 @@
                                         $current_constructed_content = $merger_node_data[$parent_id];
                                         $merger_node_data[$parent_id] = $current_constructed_content . $merged_descendant_content;
                                         $merger_node_child_num[$parent_id]++;
+                                        
+                                        //Construct Tree paths
+                                        prependParentIdToPath($paths, $chapter_id, $parent_id);
                                     }  
                                 }
 
@@ -374,6 +392,7 @@
                                             <font size=\"1px\"><i>Chapter Id: $chapter_id</i></font></div></td>
                                             </tr></tbody></table></td>";
                                         $merger_node_child_num[$parent_id]++;
+                                        $paths[$chapter_id] =  $parent_id . '/' . $chapter_id;
                                     }
 
                                     //Merger Node Case
@@ -401,6 +420,9 @@
                                             </tbody></table></td>";
                                         $merger_node_data[$parent_id] = $merged_content; //Store merged content into its parent
                                         $merger_node_child_num[$parent_id]++; //increment current node's parent child counter
+                                        
+                                        //Construct Tree paths
+                                        prependParentIdToPath($paths, $chapter_id, $parent_id);
                                     }  
                                 }
                             } 
@@ -431,9 +453,10 @@
                 require('forms/createchapter.php');  //Render Create Chapter Form
                 echo "$tree_html";//Display HTML story tree
             echo "</div>";
-            echo "<div class=\"tabContent\" id=\"storylineview\">Display every storyline in the current tree.</div>";
-            
-                   
+            echo "<div class=\"tabContent\" id=\"storylineview\">
+                Display every storyline in the current tree.<br />";
+                print_r($paths);
+            echo "</div>";      
         ?>
     </body>
 </html>

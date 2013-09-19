@@ -8,10 +8,17 @@ $user_id = preg_replace("/[^0-9]+/", "", $userkey);
 <br />
 
 <?php
-$needle = '7';
+/*$needle = '7';
 $haystack = '1 -> 21 -> 207';
 $result = strpos($haystack, $needle);
-echo $result;
+echo $result;*/
+
+$currentId = 55;
+$value = '5/7/8';
+$pattern = "#^$currentId/#";
+$match = preg_match($pattern, $value);
+echo $match;
+
 
 ?>
 

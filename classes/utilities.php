@@ -21,6 +21,7 @@ function sec_session_start()
 /*
  * Checks if the user session is valid. This is to prevent session hijacking.
  * It is unlikely a user to change their browser mid-session.
+ * @param resource  mysql_dblink    Database connection link
  */
 function login_check($mysql_dblink) 
 {
@@ -53,6 +54,8 @@ function login_check($mysql_dblink)
 /*
  * Generates the tree lines inorder to render the
  * tree in HTML
+ * @param int  num_child_nodes    number of children node current node has
+ * @param int  colspan            space distance; should be precalculated
  * @return array 
  *      tree_line => HTML_CONTENT
  *      tree_down => HTML CONTENT
@@ -103,5 +106,29 @@ function generateTreeLinesHTML($num_child_nodes, $colspan)
     $html_tree_lines['tree_lines'] = $tree_lines;
     
     return $html_tree_lines;
+}
+
+/*
+ * @param array  paths       contains partial paths in a tree
+ * @param int    currentId   Chapter Id of current node
+ * @parm  int    parentId    Parent Id of the current node
+ * @return array newly constructed $paths
+ */
+function prependParentIdToPath(&$paths, $currentId, $parentId)
+{
+    //directly modify array elements within the loop precede $value with &
+    foreach($paths as &$value)
+    {
+        $pattern = "#^$currentId/#"; //Pound sign is used as a delimiter to indicate start and end of a regular expression
+        $match = preg_match($pattern, $value);  //preg_match() returns 1 if the pattern matches given subject, 0 if it does not, or FALSE if an error occurred.
+        
+        //Check if currentId is in the current path by inspecting the first element of each constructed path
+        if($match)
+        {
+            $value = $parentId . '/' .$value;
+        }
+    }
+    
+    unset($value); // break the reference with the last element; Reference of a $value and the last array element remain even after the foreach loop. It is recommended to destroy it by unset().
 }
 ?>
