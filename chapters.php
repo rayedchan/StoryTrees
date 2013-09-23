@@ -161,7 +161,7 @@
             $chapters_num_rows = null; //number of chapters in current book
             $tree_html = null; //Store the HTML Tree
             $paths = array(); //Stores all the paths in a tree
-            $chapter_node_map = array(); //Stores each node content
+            $chapter_node_map = array(); //Stores each Node Object in tree; ChapterId => Array containing chapter properties (Key => Value)
 
             //Check if the book id exist and is an numerical
             if(isset($_GET['bid']) && is_numeric($_GET['bid']))
@@ -221,7 +221,8 @@
                     while($tree_height >= 0)
                     {   
                         //Retrieve all the chapters at a specific level for the selected book
-                        $chapters_query = "SELECT chapter_id, parent_id, height, title 
+                        $chapters_query = "SELECT chapter_id, parent_id, height, title, author, 
+                            description, create_date, last_modified 
                             FROM chapters WHERE book_id = $book_id AND height = $tree_height";
                         $chapters_result_set = mysql_query($chapters_query, $dblink);
 
@@ -232,7 +233,8 @@
                             $chapter_id = $row['chapter_id'];
                             $parent_id = $row['parent_id'];
                             $title = $row['title'];
-                            $isLeafNode = array_key_exists($chapter_id, $isLeafNodeMap);
+                            $isLeafNode = array_key_exists($chapter_id, $isLeafNodeMap); //Determines if current node is a leaf
+                            $chapter_node_map[$chapter_id] = $row; //Store chapter properties
 
                             //Only the root node exists in tree
                             if($isLeafNode)
@@ -243,7 +245,7 @@
                                      <div class=\"node\" style=\"cursor: n-resize;\"><a href=\"#\" 
                                      target=\"_blank\">$title</a><br /><font size=\"1px\">
                                      <i>Chapter Id: $chapter_id</i></font></div></td></tr></tbody></table></div>";
-                                 $paths[$chapter_id] = $chapter_id;
+                                 $paths[$chapter_id] = $chapter_id; //Construct path
                             }
 
                             //Merge current processed content, which includes all the descendents, with the root node
@@ -282,7 +284,8 @@
                                 $parent_id = $row['parent_id'];
                                 $title = $row['title'];
                                 $key_exists = array_key_exists($parent_id, $merger_node_data);
-                                $paths[$chapter_id] =  $parent_id . '/' . $chapter_id;
+                                $paths[$chapter_id] =  $parent_id . '/' . $chapter_id; //Construct path starting from the end
+                                $chapter_node_map[$chapter_id] = $row; //Store chapter properties
 
                                 //Sibling Merge Case
                                 if($key_exists)
@@ -323,8 +326,9 @@
                                 $chapter_id = $row['chapter_id'];
                                 $parent_id = $row['parent_id'];
                                 $title = $row['title'];
-                                $key_exists = array_key_exists($parent_id, $merger_node_data);
-                                $isLeafNode = array_key_exists($chapter_id, $isLeafNodeMap);
+                                $key_exists = array_key_exists($parent_id, $merger_node_data); //Determines if the parent node has been seen already
+                                $isLeafNode = array_key_exists($chapter_id, $isLeafNodeMap); //Determines if the current node is a leaf
+                                $chapter_node_map[$chapter_id] = $row; //Store chapter properties
 
                                 //Sibling Merge Case
                                 if($key_exists)
@@ -456,6 +460,9 @@
             echo "<div class=\"tabContent\" id=\"storylineview\">
                 Display every storyline in the current tree.<br />";
                 print_r($paths);
+                echo '<br /> <br />';
+                //print_r($chapter_node_map);
+                displayAllStorylines($paths, $chapter_node_map);
             echo "</div>";      
         ?>
     </body>

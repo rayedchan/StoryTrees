@@ -131,4 +131,44 @@ function prependParentIdToPath(&$paths, $currentId, $parentId)
     
     unset($value); // break the reference with the last element; Reference of a $value and the last array element remain even after the foreach loop. It is recommended to destroy it by unset().
 }
+
+/*
+ * Displays each storyline in a tree.
+ * @param  HashMap (int => String)  paths           contains all the paths in a tree. Each leaf node has an index (key). The value is in a specific String format (E.g Value 1/2/7) 
+ * @param  HashMap (int => HashMap) chapters_map    conatins all the chapters. The chapter_id is used as the index. The value is a record of the resultset in hashmap form.
+ */
+function displayAllStorylines($paths, $chapter_map)
+{
+    $delimiter = "/"; // Delimiter to tokenize
+    $counter  = 1; // Keep track of next storyline
+    $storylines_html = "";
+    
+    //Iterate each path
+    foreach($paths as $leaf_node_key => $single_path) 
+    {
+        echo "<h3>Storyline $counter</h3>";
+        
+        //tokenize the path
+        $token = strtok($single_path, $delimiter);
+        
+        //Inspect each node in a path
+        while($token !== false) //This function may return Boolean FALSE, but may also return a non-Boolean value which evaluates to FALSE.
+        {
+            $chapter_node = $chapter_map[$token];
+            $chapter_id = $chapter_node['chapter_id'];
+            $title = $chapter_node['title'];
+            $author = $chapter_node['author'];
+            $create_date = $chapter_node['create_date'];
+            echo "Chapter Id: $chapter_id <br />
+                Title: $title <br />
+                Author: $author <br />
+                Create Date: $create_date <br />";
+            $token = strtok($delimiter); // Move internal pointer to next token
+        }
+        
+        echo '<br />';
+        $counter++;
+    }
+}
+
 ?>
