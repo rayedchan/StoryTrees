@@ -35,6 +35,7 @@
             $book_query = "SELECT book_id, title, description,
                 create_date, last_modified, genre FROM books LIMIT $startingIndex,$numberOfBookToDisplay";
             $books_result_set = mysql_query($book_query, $dblink);
+            echo "<br /><hr />";
             
             //Display books
             while($row = mysql_fetch_assoc($books_result_set))
@@ -52,7 +53,7 @@
                 
                 //Place book_id in the URL
                 echo "<a href=\"chapters.php?bid=$book_id\">Chapters</a>";
-                echo "<br /> <br />";
+                echo "<br /> <hr />";
             }
             
             //Close database connection

@@ -14,3 +14,4 @@ To do list:
 -suppress error to prevent valuable info leak to users
 -SQL Date Triggers on Transaction 
 -Deprecate parallel adds (Equivalent to extending the selected node's parent)
+-Integrate story trees with Google documents

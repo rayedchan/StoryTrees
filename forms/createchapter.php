@@ -4,7 +4,7 @@ Side Node: action url is relative to the script that is including this script --
     <table>
         <tr>
             <td>Book Id:</td> 
-            <td><input type="text" name="bookid" id="bookid" value="<?php echo $book_id; ?>" /></td>
+            <td><input type="text" style="background-color:gray;" name="bookid" id="bookid" value="<?php echo $book_id; ?>" readonly = "readonly" /></td>
         </tr>
         <tr>
             <td>Title:</td> 
@@ -14,7 +14,7 @@ Side Node: action url is relative to the script that is including this script --
         <!--Case if a chapter exist -->
         <?php if($chapters_num_rows != 0){ ?>
             <tr>
-                <td>Selected Chapter Id:</td> 
+                <td>New Node below Chapter Id:</td> 
                 <td><input type="text" name="chapterid" id="chapterid" /></td>
             </tr>
         <?php } ?>
