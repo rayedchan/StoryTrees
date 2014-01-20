@@ -1,0 +1,97 @@
+Open up git bash
+heroku login    #Login to Heroku
+cd C:\Users\rchan\.ssh   
+ssh-keygen -t rsa -f id_rsa #setup public key r1y543h1n_storytrees
+heroku keys:add "id_rsa.pub" #upload the public key to heroku
+cd C:\Users\rchan\Documents\StoryTrees
+heroku create storytrees --stack cedar  #creates the repo in heroku (php apps must be on cedar stack)
+git push heroku master
+
+Get Database Connection Information
+heroku config --app storytrees
+
+
+
+//Access filesystem on heroku
+heroku run -app storytrees bash
+
+//Setup Private Key for Cert
+openssl rsa -in b65aaecc03af97-key.pem -out b65aaecc03af97-key-no-password.pem
+
+
+
+
+
+PHP Configuration file for Secure Connection
+mssql.secure_connection = On
+restart apache after making changes
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+You don't have any apps; deploy a sample application.
+ git clone git://github.com/heroku/ruby-sample.git
+ cd ruby-sample
+ heroku create
+ git push heroku master
+ heroku open
+
+
+
+
+Rename when done in website
+cd C:\Users\rchan\Documents\StoryTrees
+git remote rm heroku
+heroku git:remote -a storytrees
+
+
+
+
+
+
+
+
+
+Bitbucket
+git remote add personalwebsite https://rayedchan@bitbucket.org/rayedchan/personal-website.git
+git push -u personalwebsite --all
+
+#GameZone blogger
+git remote add origin https://rayedchan@bitbucket.org/rayedchan/gamezone.git
+
+cd C:\Users\rchan\Desktop\MyProject\Wordpress
+git add *
+git commit -m 'tech backup'
+git push
+
+techblog
+
+
+
+
+
+
