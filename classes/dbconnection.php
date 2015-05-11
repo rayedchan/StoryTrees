@@ -104,7 +104,7 @@ function quickMySQLConnect()
     $dbname = substr($url["path"],1);
     $port = '3306';
     $socket = null;
-    error_log( $hostname . ' ' . $username . ' ' . $password . ' ' . $dbname, 0);
+    //error_log( $hostname . ' ' . $username . ' ' . $password . ' ' . $dbname, 0);
     $dbconnection = new DbConnection($hostname, $username, $password, $dbname, $port, $socket, MYSQLI_CLIENT_SSL);
     $link = $dbconnection->getMySQLConnectionResource();
     return $link;
