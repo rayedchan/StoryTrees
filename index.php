@@ -5,7 +5,7 @@
         <link rel="stylesheet" href="css/jquery.jOrgChart.css"/>
         <link rel="stylesheet" href="css/jquery.jOrgChart.customizable.css"/>
         <link rel="stylesheet" href="css/mycustom.css"/>
-        <title>About</title>
+        <title>About2</title>
     </head>
 
     <body>
